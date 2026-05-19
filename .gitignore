@@ -17,4 +17,4 @@ build_all.ps1
 jdk-25/
 libs/
 BUILDS/
-
+*.py
