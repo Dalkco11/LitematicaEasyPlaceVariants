@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "litematica-easyplace-variants",
+  "version": "${version}",
+  "name": "Litematica Easy Place Variants",
+  "description": "Allows Litematica's Easy Place mode to substitute equivalent block variants (like different wood or stone types) and fixes placement rotations.",
+  "authors": [
+    "Dalkco"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/Dalkco/LitematicaEasyPlaceVariants"
+  },
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.dalkco.litematicaeasyplacevariants.LitematicaEasyPlaceVariantsMod"
+    ]
+  },
+  "mixins": [
+    "litematica-easyplace-variants.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": ">=1.21.10",
+    "fabric-api": "*",
+    "litematica": "*",
+    "malilib": "*"
+  }
+}

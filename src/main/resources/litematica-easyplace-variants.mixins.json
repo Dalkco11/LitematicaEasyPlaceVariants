@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.dalkco.litematicaeasyplacevariants.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "InventoryUtilsMixin",
+    "EntityUtilsMixin",
+    "GuiConfigsMixin",
+    "ChunkRendererSchematicVboMixin",
+    "DataManagerMixin",
+    "MultiPlayerGameModeMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

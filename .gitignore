@@ -1,0 +1,20 @@
+.gradle/
+build/
+bin/
+run/
+out/
+.idea/
+.vscode/
+*.log
+EasyPlaceUtils.txt
+EasyPlaceUtils_utf8.txt
+InventoryUtils.txt
+InventoryUtils_utf8.txt
+gui_configs.txt
+build_all.ps1
+
+# Local dependencies & environments
+jdk-25/
+libs/
+BUILDS/
+
