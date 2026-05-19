@@ -18,3 +18,4 @@ jdk-25/
 libs/
 BUILDS/
 *.py
+token.txt
