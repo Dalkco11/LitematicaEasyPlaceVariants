@@ -63,6 +63,8 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
     public static float originalYaw = 0.0f;
     public static float originalPitch = 0.0f;
     public static boolean isRotating = false;
+    public static boolean isHopperRedirect = false;
+    public static boolean isForcingSneak = false;
 
     private static File configFile;
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -203,6 +205,71 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
         return true;
     }
 
+    public static void sendFakeSneakPacket(net.minecraft.client.player.LocalPlayer player, boolean sneaking) {
+        try {
+            Class<?> inputPacketClass = null;
+            try {
+                inputPacketClass = Class.forName("net.minecraft.network.protocol.game.ServerboundPlayerInputPacket");
+            } catch (ClassNotFoundException e) {
+            }
+
+            if (inputPacketClass != null) {
+                Class<?> inputClass = Class.forName("net.minecraft.world.entity.player.Input");
+                Object inputObj = null;
+                try {
+                    java.lang.reflect.Constructor<?> inputConstructor = inputClass.getConstructor(
+                        boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class
+                    );
+                    inputObj = inputConstructor.newInstance(false, false, false, false, false, sneaking, false);
+                } catch (Exception e) {
+                }
+                
+                if (inputObj != null) {
+                    java.lang.reflect.Constructor<?> packetConstructor = inputPacketClass.getConstructor(inputClass);
+                    Object packet = packetConstructor.newInstance(inputObj);
+                    player.connection.send((net.minecraft.network.protocol.Packet<?>) packet);
+                    return;
+                }
+            }
+
+            Class<?> commandPacketClass = Class.forName("net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket");
+            Class<?> actionEnum = Class.forName("net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket$Action");
+            
+            Object action = null;
+            for (Object constant : actionEnum.getEnumConstants()) {
+                if (constant.toString().equals(sneaking ? "PRESS_SHIFT_KEY" : "RELEASE_SHIFT_KEY")) {
+                    action = constant;
+                    break;
+                }
+            }
+            
+            if (action != null) {
+                java.lang.reflect.Constructor<?> packetConstructor = commandPacketClass.getConstructor(
+                    net.minecraft.world.entity.Entity.class, actionEnum
+                );
+                Object packet = packetConstructor.newInstance(player, action);
+                player.connection.send((net.minecraft.network.protocol.Packet<?>) packet);
+            }
+            
+        } catch (Exception e) {
+        }
+    }
+
+    public static Direction getFacing(BlockState state) {
+        if (state == null) {
+            return null;
+        }
+        for (net.minecraft.world.level.block.state.properties.Property<?> prop : state.getProperties()) {
+            if (prop.getName().equals("facing")) {
+                Object val = state.getValue(prop);
+                if (val instanceof Direction) {
+                    return (Direction) val;
+                }
+            }
+        }
+        return null;
+    }
+
     public static float[] getRequiredLookDirection(BlockState state) {
         if (state == null) {
             return null;
@@ -232,12 +299,7 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
             return null;
         }
 
-        Direction facing = null;
-        if (state.hasProperty(net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING)) {
-            facing = state.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING);
-        } else if (state.hasProperty(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING)) {
-            facing = state.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING);
-        }
+        Direction facing = getFacing(state);
 
         if (facing == null) {
             return null;
@@ -256,10 +318,12 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
             || isTrapdoor) {
             opposite = true;
         } else if (block instanceof net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock) {
-            if (state.hasProperty(net.minecraft.world.level.block.state.properties.BlockStateProperties.ATTACH_FACE)) {
-                net.minecraft.world.level.block.state.properties.AttachFace attachFace = state.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.ATTACH_FACE);
-                if (attachFace == net.minecraft.world.level.block.state.properties.AttachFace.WALL) {
-                    opposite = true;
+            for (net.minecraft.world.level.block.state.properties.Property<?> prop : state.getProperties()) {
+                if (prop.getName().equals("face") && prop instanceof net.minecraft.world.level.block.state.properties.EnumProperty) {
+                    Object val = state.getValue(prop);
+                    if (val.toString().equalsIgnoreCase("wall")) {
+                        opposite = true;
+                    }
                 }
             }
         }

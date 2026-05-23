@@ -12,6 +12,7 @@
     "sources": "https://github.com/Dalkco/LitematicaEasyPlaceVariants"
   },
   "license": "MIT",
+  "icon": "assets/litematica-easyplace-variants/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": [

@@ -2,6 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.dalkco.litematicaeasyplacevariants.mixin",
+  "refmap": "litematica-easyplace-variants-refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "InventoryUtilsMixin",
