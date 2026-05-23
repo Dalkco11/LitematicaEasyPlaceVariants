@@ -315,6 +315,9 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
             || block instanceof net.minecraft.world.level.block.FurnaceBlock
             || block instanceof net.minecraft.world.level.block.BlastFurnaceBlock
             || block instanceof net.minecraft.world.level.block.SmokerBlock
+            || block instanceof net.minecraft.world.level.block.ObserverBlock
+            || block instanceof net.minecraft.world.level.block.RepeaterBlock
+            || block instanceof net.minecraft.world.level.block.ComparatorBlock
             || isTrapdoor) {
             opposite = true;
         } else if (block instanceof net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock) {
