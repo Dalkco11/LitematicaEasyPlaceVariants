@@ -225,6 +225,7 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
             || block instanceof net.minecraft.world.level.block.DoorBlock
             || block instanceof net.minecraft.world.level.block.RepeaterBlock
             || block instanceof net.minecraft.world.level.block.ComparatorBlock
+            || block instanceof net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock
             || isTrapdoor;
 
         if (!isOrientedByPlayer) {
@@ -243,10 +244,9 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
         }
 
         boolean opposite = false;
-        if (block instanceof net.minecraft.world.level.block.ObserverBlock 
-            || block instanceof net.minecraft.world.level.block.piston.PistonBaseBlock
-            || block instanceof net.minecraft.world.level.block.DispenserBlock
-            || block instanceof net.minecraft.world.level.block.DropperBlock) {
+        if (block instanceof net.minecraft.world.level.block.DispenserBlock
+            || block instanceof net.minecraft.world.level.block.DropperBlock
+            || block instanceof net.minecraft.world.level.block.piston.PistonBaseBlock) {
             opposite = true;
         } else if (block instanceof net.minecraft.world.level.block.ChestBlock
             || block instanceof net.minecraft.world.level.block.EnderChestBlock
@@ -255,6 +255,13 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
             || block instanceof net.minecraft.world.level.block.SmokerBlock
             || isTrapdoor) {
             opposite = true;
+        } else if (block instanceof net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock) {
+            if (state.hasProperty(net.minecraft.world.level.block.state.properties.BlockStateProperties.ATTACH_FACE)) {
+                net.minecraft.world.level.block.state.properties.AttachFace attachFace = state.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.ATTACH_FACE);
+                if (attachFace == net.minecraft.world.level.block.state.properties.AttachFace.WALL) {
+                    opposite = true;
+                }
+            }
         }
 
         Direction targetDirection = opposite ? facing.getOpposite() : facing;
