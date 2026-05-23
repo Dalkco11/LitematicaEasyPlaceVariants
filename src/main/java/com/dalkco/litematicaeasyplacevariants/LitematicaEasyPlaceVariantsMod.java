@@ -265,6 +265,11 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
                 if (val instanceof Direction) {
                     return (Direction) val;
                 }
+            } else if (prop.getName().equals("orientation")) {
+                Object val = state.getValue(prop);
+                if (val instanceof net.minecraft.core.FrontAndTop) {
+                    return ((net.minecraft.core.FrontAndTop) val).front();
+                }
             }
         }
         return null;
@@ -283,6 +288,7 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
             || block instanceof net.minecraft.world.level.block.ObserverBlock
             || block instanceof net.minecraft.world.level.block.DispenserBlock
             || block instanceof net.minecraft.world.level.block.DropperBlock
+            || block instanceof net.minecraft.world.level.block.CrafterBlock
             || block instanceof net.minecraft.world.level.block.ChestBlock
             || block instanceof net.minecraft.world.level.block.EnderChestBlock
             || block instanceof net.minecraft.world.level.block.FurnaceBlock
@@ -308,17 +314,13 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
         boolean opposite = false;
         if (block instanceof net.minecraft.world.level.block.DispenserBlock
             || block instanceof net.minecraft.world.level.block.DropperBlock
-            || block instanceof net.minecraft.world.level.block.piston.PistonBaseBlock) {
+            || block instanceof net.minecraft.world.level.block.CrafterBlock) {
             opposite = true;
         } else if (block instanceof net.minecraft.world.level.block.ChestBlock
             || block instanceof net.minecraft.world.level.block.EnderChestBlock
             || block instanceof net.minecraft.world.level.block.FurnaceBlock
             || block instanceof net.minecraft.world.level.block.BlastFurnaceBlock
-            || block instanceof net.minecraft.world.level.block.SmokerBlock
-            || block instanceof net.minecraft.world.level.block.ObserverBlock
-            || block instanceof net.minecraft.world.level.block.RepeaterBlock
-            || block instanceof net.minecraft.world.level.block.ComparatorBlock
-            || isTrapdoor) {
+            || block instanceof net.minecraft.world.level.block.SmokerBlock) {
             opposite = true;
         } else if (block instanceof net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock) {
             for (net.minecraft.world.level.block.state.properties.Property<?> prop : state.getProperties()) {
