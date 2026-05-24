@@ -92,6 +92,56 @@ public class MultiPlayerGameModeMixin {
                                 }
                             }
                         }
+                    } else if (schematicState.getBlock() instanceof net.minecraft.world.level.block.ChestBlock) {
+                        BlockPos[] searchOffsets = new BlockPos[]{
+                            targetPos.below(),
+                            targetPos.north(),
+                            targetPos.south(),
+                            targetPos.west(),
+                            targetPos.east(),
+                            targetPos.above()
+                        };
+                        Direction[] clickFaces = new Direction[]{
+                            Direction.UP,
+                            Direction.SOUTH,
+                            Direction.NORTH,
+                            Direction.EAST,
+                            Direction.WEST,
+                            Direction.DOWN
+                        };
+
+                        // 1. First pass: look for non-interactive solid neighbor
+                        for (int i = 0; i < searchOffsets.length; i++) {
+                            BlockPos neighbor = searchOffsets[i];
+                            BlockState neighborState = player.level().getBlockState(neighbor);
+                            if (!neighborState.isAir() 
+                                && !(neighborState.getBlock() instanceof net.minecraft.world.level.block.ChestBlock)
+                                && !LitematicaEasyPlaceVariantsMod.isInteractive(neighborState)) {
+                                Direction clickFace = clickFaces[i];
+                                Vec3 hitVec = new Vec3(
+                                    neighbor.getX() + 0.5 + clickFace.getStepX() * 0.5,
+                                    neighbor.getY() + 0.5 + clickFace.getStepY() * 0.5,
+                                    neighbor.getZ() + 0.5 + clickFace.getStepZ() * 0.5
+                                );
+                                return new BlockHitResult(hitVec, clickFace, neighbor, false);
+                            }
+                        }
+
+                        // 2. Second pass: fallback to any solid neighbor (excluding chests)
+                        for (int i = 0; i < searchOffsets.length; i++) {
+                            BlockPos neighbor = searchOffsets[i];
+                            BlockState neighborState = player.level().getBlockState(neighbor);
+                            if (!neighborState.isAir() 
+                                && !(neighborState.getBlock() instanceof net.minecraft.world.level.block.ChestBlock)) {
+                                Direction clickFace = clickFaces[i];
+                                Vec3 hitVec = new Vec3(
+                                    neighbor.getX() + 0.5 + clickFace.getStepX() * 0.5,
+                                    neighbor.getY() + 0.5 + clickFace.getStepY() * 0.5,
+                                    neighbor.getZ() + 0.5 + clickFace.getStepZ() * 0.5
+                                );
+                                return new BlockHitResult(hitVec, clickFace, neighbor, false);
+                            }
+                        }
                     }
                 }
             }
@@ -129,7 +179,10 @@ public class MultiPlayerGameModeMixin {
 
                 boolean isHopper = schematicState.getBlock() instanceof net.minecraft.world.level.block.HopperBlock;
                 if (matchesItem && !heldItem.isEmpty()) {
-                    if (!player.isShiftKeyDown()) {
+                    BlockState clickedState = player.level().getBlockState(clickedPos);
+                    boolean shouldSneak = LitematicaEasyPlaceVariantsMod.isInteractive(clickedState);
+
+                    if (shouldSneak && !player.isShiftKeyDown()) {
                         LitematicaEasyPlaceVariantsMod.isForcingSneak = true;
                         player.setShiftKeyDown(true);
                         LitematicaEasyPlaceVariantsMod.sendFakeSneakPacket(player, true);

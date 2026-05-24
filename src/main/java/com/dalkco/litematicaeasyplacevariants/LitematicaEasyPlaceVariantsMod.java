@@ -323,7 +323,8 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
             || block instanceof net.minecraft.world.level.block.BlastFurnaceBlock
             || block instanceof net.minecraft.world.level.block.SmokerBlock
             || block instanceof net.minecraft.world.level.block.RepeaterBlock
-            || block instanceof net.minecraft.world.level.block.ComparatorBlock) {
+            || block instanceof net.minecraft.world.level.block.ComparatorBlock
+            || isTrapdoor) {
             opposite = true;
         } else if (block instanceof net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock) {
             for (net.minecraft.world.level.block.state.properties.Property<?> prop : state.getProperties()) {
@@ -351,5 +352,28 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
         }
 
         return new float[]{yaw, pitch};
+    }
+
+    public static boolean isInteractive(BlockState state) {
+        if (state == null) {
+            return false;
+        }
+        Block block = state.getBlock();
+        return block instanceof net.minecraft.world.level.block.BaseEntityBlock
+            || block instanceof net.minecraft.world.level.block.DoorBlock
+            || block instanceof net.minecraft.world.level.block.TrapDoorBlock
+            || block instanceof net.minecraft.world.level.block.FenceGateBlock
+            || block instanceof net.minecraft.world.level.block.ButtonBlock
+            || block instanceof net.minecraft.world.level.block.LeverBlock
+            || block instanceof net.minecraft.world.level.block.NoteBlock
+            || block instanceof net.minecraft.world.level.block.CraftingTableBlock
+            || block instanceof net.minecraft.world.level.block.LoomBlock
+            || block instanceof net.minecraft.world.level.block.CartographyTableBlock
+            || block instanceof net.minecraft.world.level.block.GrindstoneBlock
+            || block instanceof net.minecraft.world.level.block.StonecutterBlock
+            || block instanceof net.minecraft.world.level.block.AnvilBlock
+            || block instanceof net.minecraft.world.level.block.LecternBlock
+            || block instanceof net.minecraft.world.level.block.RepeaterBlock
+            || block instanceof net.minecraft.world.level.block.ComparatorBlock;
     }
 }
