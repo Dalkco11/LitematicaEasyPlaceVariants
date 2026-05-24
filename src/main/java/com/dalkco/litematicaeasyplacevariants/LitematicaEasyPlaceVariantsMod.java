@@ -314,13 +314,16 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
         boolean opposite = false;
         if (block instanceof net.minecraft.world.level.block.DispenserBlock
             || block instanceof net.minecraft.world.level.block.DropperBlock
-            || block instanceof net.minecraft.world.level.block.CrafterBlock) {
+            || block instanceof net.minecraft.world.level.block.CrafterBlock
+            || block instanceof net.minecraft.world.level.block.piston.PistonBaseBlock) {
             opposite = true;
         } else if (block instanceof net.minecraft.world.level.block.ChestBlock
             || block instanceof net.minecraft.world.level.block.EnderChestBlock
             || block instanceof net.minecraft.world.level.block.FurnaceBlock
             || block instanceof net.minecraft.world.level.block.BlastFurnaceBlock
-            || block instanceof net.minecraft.world.level.block.SmokerBlock) {
+            || block instanceof net.minecraft.world.level.block.SmokerBlock
+            || block instanceof net.minecraft.world.level.block.RepeaterBlock
+            || block instanceof net.minecraft.world.level.block.ComparatorBlock) {
             opposite = true;
         } else if (block instanceof net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock) {
             for (net.minecraft.world.level.block.state.properties.Property<?> prop : state.getProperties()) {
