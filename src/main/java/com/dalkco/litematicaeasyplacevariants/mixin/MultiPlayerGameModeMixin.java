@@ -28,11 +28,12 @@ public class MultiPlayerGameModeMixin {
 
     @ModifyVariable(method = "useItemOn", at = @At("HEAD"), argsOnly = true, remap = true)
     private BlockHitResult modifyUseItemOnHitResult(BlockHitResult hitResult) {
+        LitematicaEasyPlaceVariantsMod.LOGGER.info("modifyUseItemOnHitResult: isHandling = {}", fi.dy.masa.litematica.util.EasyPlaceUtils.isHandling());
         LitematicaEasyPlaceVariantsMod.isHopperRedirect = false;
         boolean variantsEnabled = LitematicaEasyPlaceVariantsMod.ENABLE_VARIANTS.getBooleanValue();
         boolean fixEnabled = LitematicaEasyPlaceVariantsMod.EASY_PLACE_FIX.getBooleanValue();
 
-        if (variantsEnabled && fixEnabled && fi.dy.masa.litematica.util.EasyPlaceUtils.isHandling()) {
+        if (variantsEnabled && fixEnabled) {
             Minecraft mc = Minecraft.getInstance();
             LocalPlayer player = mc.player;
             if (player == null) {
@@ -40,6 +41,14 @@ public class MultiPlayerGameModeMixin {
             }
 
             BlockPos clickedPos = hitResult.getBlockPos();
+            BlockState clickedState = player.level().getBlockState(clickedPos);
+            boolean isInteractive = LitematicaEasyPlaceVariantsMod.isInteractive(clickedState);
+            boolean isSneaking = player.isShiftKeyDown() || fi.dy.masa.litematica.util.EasyPlaceUtils.isHandling();
+
+            if (isInteractive && !isSneaking) {
+                return hitResult;
+            }
+
             BlockPos targetPos = clickedPos;
 
             try {
@@ -189,11 +198,20 @@ public class MultiPlayerGameModeMixin {
 
     @Inject(method = "useItemOn", at = @At("HEAD"), remap = true)
     private void onUseItemOnHead(LocalPlayer player, InteractionHand hand, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> cir) {
+        LitematicaEasyPlaceVariantsMod.LOGGER.info("onUseItemOnHead: isHandling = {}", fi.dy.masa.litematica.util.EasyPlaceUtils.isHandling());
         boolean variantsEnabled = LitematicaEasyPlaceVariantsMod.ENABLE_VARIANTS.getBooleanValue();
         boolean fixEnabled = LitematicaEasyPlaceVariantsMod.EASY_PLACE_FIX.getBooleanValue();
 
-        if (variantsEnabled && fixEnabled && fi.dy.masa.litematica.util.EasyPlaceUtils.isHandling()) {
+        if (variantsEnabled && fixEnabled) {
             BlockPos clickedPos = hitResult.getBlockPos();
+            BlockState clickedState = player.level().getBlockState(clickedPos);
+            boolean isInteractive = LitematicaEasyPlaceVariantsMod.isInteractive(clickedState);
+            boolean isSneaking = player.isShiftKeyDown() || fi.dy.masa.litematica.util.EasyPlaceUtils.isHandling();
+
+            if (isInteractive && !isSneaking) {
+                return;
+            }
+
             BlockPos targetPos = clickedPos;
 
             try {
@@ -217,8 +235,8 @@ public class MultiPlayerGameModeMixin {
 
                 boolean isHopper = schematicState.getBlock() instanceof net.minecraft.world.level.block.HopperBlock;
                 if (matchesItem && !heldItem.isEmpty()) {
-                    BlockState clickedState = player.level().getBlockState(clickedPos);
-                    boolean shouldSneak = LitematicaEasyPlaceVariantsMod.isInteractive(clickedState);
+                    boolean shouldSneak = LitematicaEasyPlaceVariantsMod.isInteractive(clickedState)
+                        && fi.dy.masa.litematica.util.EasyPlaceUtils.isHandling();
 
                     LitematicaEasyPlaceVariantsMod.LOGGER.info("useItemOn [HEAD] clickedPos: {}, targetPos: {}, clickedState: {}, schematicState: {}, heldItem: {}, shouldSneak: {}, isShiftKeyDown: {}",
                         clickedPos, targetPos, clickedState, schematicState, heldItem, shouldSneak, player.isShiftKeyDown());
