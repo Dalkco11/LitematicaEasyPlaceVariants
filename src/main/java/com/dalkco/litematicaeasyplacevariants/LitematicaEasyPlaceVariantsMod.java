@@ -190,8 +190,10 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
         ItemStack req = new ItemStack(schematicState.getBlock().asItem());
         ItemStack candidate = new ItemStack(worldState.getBlock().asItem());
 
-        if (!isEquivalent(req, candidate)) {
-            return false;
+        if (req.getItem() != candidate.getItem()) {
+            if (!ENABLE_VARIANTS.getBooleanValue() || !isEquivalent(req, candidate)) {
+                return false;
+            }
         }
 
         for (net.minecraft.world.level.block.state.properties.Property<?> prop : schematicState.getProperties()) {
@@ -204,6 +206,19 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
 
         return true;
     }
+
+    public static boolean areBlocksEquivalent(BlockState schematicState, BlockState worldState) {
+        if (schematicState == null || worldState == null) {
+            return false;
+        }
+        if (schematicState.getBlock() == worldState.getBlock()) {
+            return true;
+        }
+        ItemStack req = new ItemStack(schematicState.getBlock().asItem());
+        ItemStack candidate = new ItemStack(worldState.getBlock().asItem());
+        return isEquivalent(req, candidate);
+    }
+
 
     public static void sendFakeSneakPacket(net.minecraft.client.player.LocalPlayer player, boolean sneaking) {
         try {

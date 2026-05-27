@@ -32,7 +32,7 @@ public class MultiPlayerGameModeMixin {
         boolean variantsEnabled = LitematicaEasyPlaceVariantsMod.ENABLE_VARIANTS.getBooleanValue();
         boolean fixEnabled = LitematicaEasyPlaceVariantsMod.EASY_PLACE_FIX.getBooleanValue();
 
-        if (variantsEnabled && fixEnabled) {
+        if (variantsEnabled && fixEnabled && fi.dy.masa.litematica.util.EasyPlaceUtils.isHandling()) {
             Minecraft mc = Minecraft.getInstance();
             LocalPlayer player = mc.player;
             if (player == null) {
@@ -142,6 +142,44 @@ public class MultiPlayerGameModeMixin {
                                 return new BlockHitResult(hitVec, clickFace, neighbor, false);
                             }
                         }
+                    } else if (schematicState.getBlock() instanceof net.minecraft.world.level.block.TrapDoorBlock) {
+                        net.minecraft.world.level.block.state.properties.Half half = schematicState.getValue(net.minecraft.world.level.block.TrapDoorBlock.HALF);
+                        Direction facing = LitematicaEasyPlaceVariantsMod.getFacing(schematicState);
+
+                        if (half == net.minecraft.world.level.block.state.properties.Half.BOTTOM) {
+                            BlockPos blockBelow = targetPos.below();
+                            if (!player.level().getBlockState(blockBelow).isAir()) {
+                                Vec3 hitVec = new Vec3(
+                                    targetPos.getX() + 0.5,
+                                    targetPos.getY(),
+                                    targetPos.getZ() + 0.5
+                                );
+                                return new BlockHitResult(hitVec, Direction.UP, blockBelow, false);
+                            }
+                        } else {
+                            BlockPos blockAbove = targetPos.above();
+                            if (!player.level().getBlockState(blockAbove).isAir()) {
+                                Vec3 hitVec = new Vec3(
+                                    targetPos.getX() + 0.5,
+                                    targetPos.getY() + 1.0,
+                                    targetPos.getZ() + 0.5
+                                );
+                                return new BlockHitResult(hitVec, Direction.DOWN, blockAbove, false);
+                            }
+                        }
+
+                        if (facing != null) {
+                            BlockPos neighbor = targetPos.relative(facing.getOpposite());
+                            if (!player.level().getBlockState(neighbor).isAir()) {
+                                Direction clickFace = facing;
+                                Vec3 hitVec = new Vec3(
+                                    neighbor.getX() + 0.5 + clickFace.getStepX() * 0.5,
+                                    neighbor.getY() + (half == net.minecraft.world.level.block.state.properties.Half.BOTTOM ? 0.2 : 0.8),
+                                    neighbor.getZ() + 0.5 + clickFace.getStepZ() * 0.5
+                                );
+                                return new BlockHitResult(hitVec, clickFace, neighbor, false);
+                            }
+                        }
                     }
                 }
             }
@@ -154,7 +192,7 @@ public class MultiPlayerGameModeMixin {
         boolean variantsEnabled = LitematicaEasyPlaceVariantsMod.ENABLE_VARIANTS.getBooleanValue();
         boolean fixEnabled = LitematicaEasyPlaceVariantsMod.EASY_PLACE_FIX.getBooleanValue();
 
-        if (variantsEnabled && fixEnabled) {
+        if (variantsEnabled && fixEnabled && fi.dy.masa.litematica.util.EasyPlaceUtils.isHandling()) {
             BlockPos clickedPos = hitResult.getBlockPos();
             BlockPos targetPos = clickedPos;
 
@@ -181,6 +219,9 @@ public class MultiPlayerGameModeMixin {
                 if (matchesItem && !heldItem.isEmpty()) {
                     BlockState clickedState = player.level().getBlockState(clickedPos);
                     boolean shouldSneak = LitematicaEasyPlaceVariantsMod.isInteractive(clickedState);
+
+                    LitematicaEasyPlaceVariantsMod.LOGGER.info("useItemOn [HEAD] clickedPos: {}, targetPos: {}, clickedState: {}, schematicState: {}, heldItem: {}, shouldSneak: {}, isShiftKeyDown: {}",
+                        clickedPos, targetPos, clickedState, schematicState, heldItem, shouldSneak, player.isShiftKeyDown());
 
                     if (shouldSneak && !player.isShiftKeyDown()) {
                         LitematicaEasyPlaceVariantsMod.isForcingSneak = true;
@@ -215,6 +256,8 @@ public class MultiPlayerGameModeMixin {
 
     @Inject(method = "useItemOn", at = @At("RETURN"), remap = true)
     private void onUseItemOnReturn(LocalPlayer player, InteractionHand hand, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> cir) {
+        LitematicaEasyPlaceVariantsMod.LOGGER.info("useItemOn [RETURN] result: {}", cir.getReturnValue());
+
         if (LitematicaEasyPlaceVariantsMod.isForcingSneak) {
             LitematicaEasyPlaceVariantsMod.isForcingSneak = false;
             player.setShiftKeyDown(false);

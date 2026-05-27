@@ -10,7 +10,8 @@
     "GuiConfigsMixin",
     "ChunkRendererSchematicVboMixin",
     "DataManagerMixin",
-    "MultiPlayerGameModeMixin"
+    "MultiPlayerGameModeMixin",
+    "EasyPlaceUtilsMixin"
   ],
   "client": [
   ],
