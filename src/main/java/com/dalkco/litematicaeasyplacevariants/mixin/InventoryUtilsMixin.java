@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -23,8 +24,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = InventoryUtils.class, remap = false)
 public class InventoryUtilsMixin {
 
+    // findSlotMatchingItem ignores offhand/armor, so a variant found there would re-enter this handler forever.
+    @Unique
+    private static boolean litematicaeasyplacevariants$pickingVariant = false;
+
     @Inject(method = "schematicWorldPickBlock", at = @At("HEAD"), cancellable = true)
     private static void onSchematicWorldPickBlock(ItemStack stack, BlockPos pos, Level world, Minecraft mc, CallbackInfo ci) {
+        if (litematicaeasyplacevariants$pickingVariant) {
+            return;
+        }
         LocalPlayer player = mc.player;
         if (player != null && !player.isCreative()) {
             Inventory inventory = player.getInventory();
@@ -65,7 +73,12 @@ public class InventoryUtilsMixin {
             }
 
             if (!variantStack.isEmpty()) {
-                InventoryUtils.schematicWorldPickBlock(variantStack, pos, world, mc);
+                litematicaeasyplacevariants$pickingVariant = true;
+                try {
+                    InventoryUtils.schematicWorldPickBlock(variantStack, pos, world, mc);
+                } finally {
+                    litematicaeasyplacevariants$pickingVariant = false;
+                }
                 ci.cancel();
             }
         }
