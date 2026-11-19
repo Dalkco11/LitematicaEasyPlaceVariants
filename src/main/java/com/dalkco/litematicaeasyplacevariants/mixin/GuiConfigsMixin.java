@@ -81,7 +81,7 @@ public abstract class GuiConfigsMixin {
             x = lastButton.getX() + lastButton.getWidth() + 2;
         }
 
-        ButtonGeneric variantButton = new ButtonGeneric(x, y, -1, 20, "Настройки Вариантов", new String[0]);
+        ButtonGeneric variantButton = new ButtonGeneric(x, y, -1, 20, fi.dy.masa.malilib.util.StringUtils.translate("litematica-easyplace-variants.gui.button.variants"), new String[0]);
         variantButton.setEnabled(!LitematicaEasyPlaceVariantsMod.isCustomTabActive);
 
         this.callAddButton(variantButton, (b, buttonId) -> {

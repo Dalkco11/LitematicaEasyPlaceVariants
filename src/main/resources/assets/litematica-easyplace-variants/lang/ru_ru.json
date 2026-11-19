@@ -1,0 +1,14 @@
+{
+  "litematica-easyplace-variants.gui.button.variants": "Настройки вариантов",
+  "litematica-easyplace-variants.config.title": "Настройки Easy Place Variants",
+  "litematica-easyplace-variants.config.easyPlaceEnableVariants": "Варианты блоков",
+  "litematica-easyplace-variants.config.easyPlaceWoodenVariants": "Деревянные варианты",
+  "litematica-easyplace-variants.config.easyPlaceStoneVariants": "Каменные варианты",
+  "litematica-easyplace-variants.config.easyPlaceVerifyVariantsState": "Засчитывать варианты",
+  "litematica-easyplace-variants.config.easyPlaceFix": "Исправление поворота",
+  "litematica-easyplace-variants.config.comment.easyPlaceEnableVariants": "Включить/выключить автоматическую замену вариантов блоков (дерево, камень) во время Easy Place.",
+  "litematica-easyplace-variants.config.comment.easyPlaceWoodenVariants": "Включить/выключить замену деревянных вариантов блоков (заборы, ступени, плиты, двери, люки, брёвна и т.д.).",
+  "litematica-easyplace-variants.config.comment.easyPlaceStoneVariants": "Включить/выключить замену каменных вариантов блоков (стены, ступени, плиты и песчаник).",
+  "litematica-easyplace-variants.config.comment.easyPlaceVerifyVariantsState": "Показывать эквивалентные варианты блоков как правильно установленные, если их состояние (поворот, направление) совпадает со схемой.",
+  "litematica-easyplace-variants.config.comment.easyPlaceFix": "Корректировать поворот (направление) устанавливаемых блоков при Easy Place, чтобы они вставали ровно по схеме (даже на ванильных серверах)."
+}

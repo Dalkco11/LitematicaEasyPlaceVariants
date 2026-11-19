@@ -26,31 +26,11 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
     public static final String MOD_ID = "litematica-easyplace-variants";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public static final ConfigBoolean ENABLE_VARIANTS = new ConfigBoolean(
-        "easyPlaceEnableVariants", 
-        true, 
-        "Включить/выключить автоматическую замену вариантов блоков (дерево, камень) во время Easy Place."
-    );
-    public static final ConfigBoolean WOODEN_VARIANTS = new ConfigBoolean(
-        "easyPlaceWoodenVariants", 
-        true, 
-        "Включить/выключить замену деревянных вариантов блоков (заборы, ступени, плиты, двери, люки, брёвна и т.д.)."
-    );
-    public static final ConfigBoolean STONE_VARIANTS = new ConfigBoolean(
-        "easyPlaceStoneVariants", 
-        true, 
-        "Включить/выключить замену каменных вариантов блоков (стены, ступени, плиты и песчаник)."
-    );
-    public static final ConfigBoolean VERIFY_VARIANTS_STATE = new ConfigBoolean(
-        "easyPlaceVerifyVariantsState", 
-        true, 
-        "Показывать эквивалентные варианты блоков как правильно установленные, если их состояние (поворот, направление) совпадает со схемой."
-    );
-    public static final ConfigBoolean EASY_PLACE_FIX = new ConfigBoolean(
-        "easyPlaceFix", 
-        true, 
-        "Корректировать поворот (направление) устанавливаемых блоков при Easy Place, чтобы они вставали ровно по схеме (даже на ванильных серверах)."
-    );
+    public static final ConfigBoolean ENABLE_VARIANTS = option("easyPlaceEnableVariants", true);
+    public static final ConfigBoolean WOODEN_VARIANTS = option("easyPlaceWoodenVariants", true);
+    public static final ConfigBoolean STONE_VARIANTS = option("easyPlaceStoneVariants", true);
+    public static final ConfigBoolean VERIFY_VARIANTS_STATE = option("easyPlaceVerifyVariantsState", true);
+    public static final ConfigBoolean EASY_PLACE_FIX = option("easyPlaceFix", true);
 
     public static final List<ConfigBoolean> OPTIONS = List.of(
         ENABLE_VARIANTS, 
@@ -68,6 +48,27 @@ public class LitematicaEasyPlaceVariantsMod implements ClientModInitializer {
 
     private static File configFile;
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
+    /** Translation key of an option's display name: {@code <modid>.config.<name>}. */
+    public static String nameKey(ConfigBoolean option) {
+        return MOD_ID + ".config." + option.getName();
+    }
+
+    /** Translation key of an option's description: {@code <modid>.config.comment.<name>}. */
+    public static String commentKey(ConfigBoolean option) {
+        return MOD_ID + ".config.comment." + option.getName();
+    }
+
+    /** Comment and display name are translation keys, so the Litematica tab follows the client language. */
+    private static ConfigBoolean option(String name, boolean defaultValue) {
+        return new ConfigBoolean(
+            name,
+            defaultValue,
+            MOD_ID + ".config.comment." + name,
+            fi.dy.masa.malilib.util.StringUtils.splitCamelCase(name),
+            MOD_ID + ".config." + name
+        );
+    }
 
     @Override
     public void onInitializeClient() {

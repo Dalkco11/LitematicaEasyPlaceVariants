@@ -1,0 +1,14 @@
+{
+  "litematica-easyplace-variants.gui.button.variants": "Variant Settings",
+  "litematica-easyplace-variants.config.title": "Easy Place Variants Settings",
+  "litematica-easyplace-variants.config.easyPlaceEnableVariants": "Block variants",
+  "litematica-easyplace-variants.config.easyPlaceWoodenVariants": "Wood variants",
+  "litematica-easyplace-variants.config.easyPlaceStoneVariants": "Stone variants",
+  "litematica-easyplace-variants.config.easyPlaceVerifyVariantsState": "Count variants as correct",
+  "litematica-easyplace-variants.config.easyPlaceFix": "Rotation fix",
+  "litematica-easyplace-variants.config.comment.easyPlaceEnableVariants": "Turn automatic swapping of block variants (wood, stone) during Easy Place on or off.",
+  "litematica-easyplace-variants.config.comment.easyPlaceWoodenVariants": "Turn swapping of wooden block variants on or off (fences, stairs, slabs, doors, trapdoors, logs, etc.).",
+  "litematica-easyplace-variants.config.comment.easyPlaceStoneVariants": "Turn swapping of stone block variants on or off (walls, stairs, slabs and sandstone).",
+  "litematica-easyplace-variants.config.comment.easyPlaceVerifyVariantsState": "Show equivalent block variants as correctly placed when their state (rotation, facing) matches the schematic.",
+  "litematica-easyplace-variants.config.comment.easyPlaceFix": "Correct the rotation (facing) of blocks placed with Easy Place so they match the schematic exactly (even on vanilla servers)."
+}
